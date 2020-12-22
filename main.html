@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<!-- saved from url=(0089)https://pegaz.uj.edu.pl/pluginfile.php/3623218/mod_resource/content/1/threejs_test.html_. -->
+<html lang="en">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Mieszkanie</title>
+
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	<link type="text/css" rel="stylesheet" href="./three.js webgl - geometry - extrude shapes_files/main.css">
+</head>
+
+<body class="vsc-initialized">
+
+	<script type="module">
+
+		import * as THREE from 'https://unpkg.com/three/build/three.module.js';
+		import Apartment from './Apartment.js';
+		import { fit } from './Evaluator.js';
+		import { createArray } from './utils.js';
+		import { LENGTH, WIDTH } from './Values.js';
+
+		import { TrackballControls } from 'https://unpkg.com/three/examples/jsm/controls/TrackballControls.js';
+
+		var camera, scene, renderer, controls;
+
+		init();
+		animate();
+		function rand(min, max) {
+			min = Math.ceil(min);
+			max = Math.floor(max);
+			return Math.floor(Math.random() * (max - min)) + min;
+		}
+		function init() {
+
+			renderer = new THREE.WebGLRenderer();
+			renderer.setPixelRatio(window.devicePixelRatio);
+			renderer.setSize(window.innerWidth, window.innerHeight);
+			document.body.appendChild(renderer.domElement);
+
+			scene = new THREE.Scene();
+			scene.background = new THREE.Color(0xffffff);
+
+			camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 1, 1000);
+			camera.position.set(0, 0, 150);
+
+			controls = new TrackballControls(camera, renderer.domElement);
+			controls.minDistance = 10;
+			controls.maxDistance = 150;
+
+			scene.add(new THREE.AmbientLight(0x222222));
+
+			var light = new THREE.PointLight(0xffffff);
+			light.position.copy(camera.position);
+			scene.add( light );
+
+			// Ustawienia mieszkania
+			let length = LENGTH
+			let width = WIDTH
+			let height = 1;
+
+			// ustawienia populacji początkowej
+			let n_osobnikow = 10;
+			let liczbaScian = rand(2, 4);
+
+			let populacja_3d = new THREE.Group();
+			let populacja = createArray(n_osobnikow);
+
+			for (let i = 0; i < n_osobnikow; i++) {
+				let osobnik = new Apartment(length, width);
+				for (let j = 0; j < liczbaScian; j++) {
+					osobnik.putRandomWall();
+				}
+				osobnik.finish()
+				// osobnik.printGenotype()
+				// osobnik.printPhenotype();
+				let fenotyp_3d = osobnik.getPhenotypeShapesGroup(i * length * 1.2, 0, height, );
+				populacja.push(osobnik);
+				populacja_3d.add(fenotyp_3d);
+			}
+			scene.add(populacja_3d);
+			populacja.forEach(osobnik => {
+				console.log(fit(osobnik));
+				
+			});
+		}
+
+		function animate() {
+
+			requestAnimationFrame(animate);
+
+			controls.update();
+			renderer.render(scene, camera);
+
+		}
+
+	</script>
+
+
+
+
+	<canvas width="1867" height="980" style="width: 1867px; height: 980px;"></canvas>
+	<div id="pocket-extension-root">
+		<div class="pocket-egasyq"></div>
+	</div>
+	<div id="pocket-extension-styles">
+		<style data-emotion="pocket"></style>
+	</div>
+</body>
+
+</html>

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>three.js webgl - geometry - extrude shapes</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link type="text/css" rel="stylesheet" href="main.css">
+</head>
+
+<body>
+
+    <script type="module">
+
+        import * as THREE from 'https://unpkg.com/three/build/three.module.js';
+
+        import { TrackballControls } from 'https://unpkg.com/three/examples/jsm/controls/TrackballControls.js';
+
+        var camera, scene, renderer, controls;
+
+        init();
+        animate();
+
+        function init() {
+
+            renderer = new THREE.WebGLRenderer();
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x57c4a);
+
+            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
+            camera.position.set(0, 0, 50);
+
+            controls = new TrackballControls(camera, renderer.domElement);
+            controls.minDistance = 20;
+            controls.maxDistance = 50;
+
+            scene.add(new THREE.AmbientLight(0x222222));
+
+            var light = new THREE.PointLight(0xffffff);
+            light.position.copy(camera.position);
+            //scene.add( light );
+
+           
+            //kolory:
+
+            var material = new THREE.MeshBasicMaterial({ color: 0xF58F0E });
+            var material2 = new THREE.MeshBasicMaterial({ color: 0xD28018 });
+            var material3 = new THREE.MeshBasicMaterial({ color: 0xF5B05B });
+            var materialRed = new THREE.MeshBasicMaterial({ color: 0xF14C0E });
+            var materialWhite = new THREE.MeshBasicMaterial({ color: 0xffffff });
+            var materialBlack = new THREE.MeshBasicMaterial({ color: 0x000000 });
+            var headGeometry = new THREE.BoxGeometry(6, 10, 10);
+            var earGeometry = new THREE.ConeGeometry(2.5, 8, 4);
+            var mouthGeometry = new THREE.ConeGeometry(3.5, 6, 4);
+            //budowa grafu:
+            const pies = {
+                tulow: {
+                    dlugoscTulowia: 20, szerokoscTulowia: 14, wysokoscTulowia: 8, kolorTulowia: material2,
+                    nogi: { dlugoscNog: 4, kolorNog: material },
+                    ogon: { czyOgon: 1, kolorOgona: material }
+                },
+                glowa: {
+                    ksztaltGlowy: headGeometry, wysokoscGlowy: 10, szerokoscGlowy: 10, kolorGlowy: material3,
+                    uszy: { ksztaltUszu: earGeometry, kolorUszu: material2 },
+                    pysk: { ksztaltPyska: mouthGeometry, kolorPyska: materialWhite },
+                    nos: { kolorNosa: materialBlack },
+                    oczy: { kolorOczu: materialBlack }
+                }
+            };
+            // draw(pies, 17, 15, -5)
+            firstGeneration(1)
+        }
+
+        function individual(){
+            var material = new THREE.MeshBasicMaterial({ color: 0xF58F0E });
+            var material2 = new THREE.MeshBasicMaterial({ color: 0xD28018 });
+            var material3 = new THREE.MeshBasicMaterial({ color: 0xF5B05B });
+            var materialRed = new THREE.MeshBasicMaterial({ color: 0xF14C0E });
+            var materialWhite = new THREE.MeshBasicMaterial({ color: 0xffffff });
+            var materialBlack = new THREE.MeshBasicMaterial({ color: 0x000000 });
+            var headGeometry = new THREE.BoxGeometry(6, 10, 10);
+            var earGeometry = new THREE.ConeGeometry(2.5, 8, 4);
+            var mouthGeometry = new THREE.ConeGeometry(3.5, 6, 4);
+            let pies = {
+                tulow: {
+                    nogi: {},
+                    ogon: {},
+                },
+                glowa: {
+                    uszy: {},
+                    pysk: {},
+                    nos: {},
+                    oczy: {},
+                }
+            };
+            //losowanie cech
+            pies.tulow.dlugoscTulowia = Math.floor(Math.random() * (300 - 6 + 1)) + 6;
+            pies.tulow.szerokoscTulowia = Math.floor(Math.random() * (300 - 6 + 1)) + 6;
+            pies.tulow.wysokoscTulowia = Math.floor(Math.random() * (300 - 6 + 1)) + 6;
+            pies.tulow.kolorTulowia = material2
+            pies.tulow.nogi.dlugoscNog = Math.floor(Math.random() * (100 - 2 + 1)) + 2;
+            pies.tulow.nogi.kolorNog = material
+            var temp = Math.random();
+            if(temp >= 0.5){
+                pies.tulow.ogon.czyOgon = 1;
+            }else{
+                pies.tulow.ogon.czyOgon = 0;
+            }
+            pies.tulow.ogon.kolorOgona = material
+            pies.glowa.ksztaltGlowy = headGeometry
+            pies.glowa.wysokoscGlowy = Math.floor(Math.random() * (100 - 6 + 1)) + 6;
+            pies.glowa.szerokoscGlowy = Math.floor(Math.random() * (100 - 6 + 1)) + 6;
+            pies.glowa.kolorGlowy = material3
+            pies.glowa.uszy.ksztaltUszu = earGeometry
+            pies.glowa.uszy.kolorUszu = material2
+            pies.glowa.pysk.ksztaltPyska = mouthGeometry
+            pies.glowa.pysk.kolorPyska = materialWhite
+            pies.glowa.nos.kolorNosa = materialBlack
+            pies.glowa.oczy.kolorOczu = materialBlack
+            return pies;
+        }
+
+        function firstGeneration(max){
+            const generation = []
+            for(var i=0; i < max; i++){
+                generation.push(individual())
+            }
+            var x=17;
+            var y=15;
+            var z=-5;
+            var i=0
+            for(var dog of generation){
+                x+=i
+                y+=i
+                z+=i
+                draw(dog, x, y, z)
+                i+=30
+            }
+        }
+        
+        function draw(pies, x, y, z) {
+            var group = new THREE.Group();
+            //position dla tułowia
+            //tulów:
+            var corpsGeometry = new THREE.BoxGeometry(pies.tulow.dlugoscTulowia, pies.tulow.wysokoscTulowia, pies.tulow.szerokoscTulowia)
+            var corps = new THREE.Mesh(corpsGeometry, pies.tulow.kolorTulowia)
+            corps.position.set(x, y, z)
+            group.add(corps)
+            //ogon:
+            if (pies.tulow.ogon.czyOgon == 1) {
+                var tailGeometry = new THREE.CylinderGeometry(0.1, 2, 10, 40);
+                var tail = new THREE.Mesh(tailGeometry, pies.tulow.ogon.kolorOgona);
+                tail.rotation.set(0, 0, -1)
+                tail.position.set(x + 13, y + 5, z)
+                group.add(tail)
+            }
+            //nogi:
+            var legGeometry = new THREE.BoxGeometry(2, pies.tulow.nogi.dlugoscNog, 2)
+            var leg1 = new THREE.Mesh(legGeometry, pies.tulow.nogi.kolorNog);
+            var leg2 = new THREE.Mesh(legGeometry, pies.tulow.nogi.kolorNog);
+            var leg3 = new THREE.Mesh(legGeometry, pies.tulow.nogi.kolorNog);
+            var leg4 = new THREE.Mesh(legGeometry, pies.tulow.nogi.kolorNog);
+            leg1.position.set(x - 7, y - 5, z + 5);
+            leg2.position.set(x + 7, y - 5, z + 5);
+            leg3.position.set(x - 7, y - 5, z - 5);
+            leg4.position.set(x + 7, y - 5, z - 5);
+            group.add(leg1);
+            group.add(leg2);
+            group.add(leg3);
+            group.add(leg4);
+            //głowa:
+            var head = new THREE.Mesh(pies.glowa.ksztaltGlowy, pies.glowa.kolorGlowy);
+            head.position.set(x - 9, y + 9, z)
+            group.add(head)
+            //uszy:
+            var ear1 = new THREE.Mesh(pies.glowa.uszy.ksztaltUszu, pies.glowa.uszy.kolorUszu);
+            var ear2 = new THREE.Mesh(pies.glowa.uszy.ksztaltUszu, pies.glowa.uszy.kolorUszu);
+            ear1.position.set(x - 9, y + 15, z - 5)
+            ear2.position.set(x - 9, y + 15, z + 5)
+            ear2.rotation.set(0.51, 0, 0)
+            ear1.rotation.set(-0.51, 0, 0)
+            group.add(ear1)
+            group.add(ear2)
+            //pysk:
+            var mouth = new THREE.Mesh(pies.glowa.pysk.ksztaltPyska, pies.glowa.pysk.kolorPyska);
+            mouth.position.set(x - 13, x + 7, z)
+            mouth.rotation.set(0, 0, 1.2)
+            group.add(mouth)
+            //nos:
+            var noseGeometry = new THREE.ConeGeometry(0.6, 1, 4)
+            var nose = new THREE.Mesh(noseGeometry, pies.glowa.nos.kolorNosa)
+            nose.position.set(x - 15.43, y + 10, z)
+            nose.rotation.set(0, 0, 1.2)
+            group.add(nose)
+            //oczy:
+            var eyeGeometry = new THREE.CircleGeometry(0.7, 32);
+            var eye1 = new THREE.Mesh(eyeGeometry, pies.glowa.oczy.kolorOczu);
+            var eye2 = new THREE.Mesh(eyeGeometry, pies.glowa.oczy.kolorOczu);
+            eye1.position.set(x - 12.1, y + 11, z - 2)
+            eye2.position.set(x - 12.1, y + 11, z + 2)
+            eye1.rotation.set(0, -1.6, 0)
+            eye2.rotation.set(0, -1.6, 0)
+            group.add(eye1)
+            group.add(eye2)
+
+            scene.add(group);
+        }
+
+        function animate() {
+
+            requestAnimationFrame(animate);
+
+            controls.update();
+            renderer.render(scene, camera);
+
+        }
+
+    </script>
+
+</body>
+
+</html>
