@@ -60,7 +60,7 @@
 			let height = 1;
 
 			// ustawienia populacji początkowej
-			let n_osobnikow = 10;
+			let n_osobnikow = 1;
 			let liczbaScian = rand(2, 4);
 
 			let populacja_3d = new THREE.Group();
@@ -80,7 +80,8 @@
 			}
 			scene.add(populacja_3d);
 			populacja.forEach(osobnik => {
-				console.log(fit(osobnik));
+				// console.log(fit(osobnik));
+				fit(osobnik);
 				
 			});
 		}

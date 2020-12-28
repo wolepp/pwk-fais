@@ -1,6 +1,3 @@
-export const wallConnections = Object.freeze({"UP": 1, "RIGHT": 2, "DOWN": 4, "LEFT": 8});
-export const wallConnectionsNums = [8, 4, 2, 1]
-
 export function createArray(length) {
     var arr = new Array(length || 0),
         i = length;
