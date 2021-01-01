@@ -15,7 +15,7 @@ export const POINTS = {
     MAX_POINTS: 26,
     // penalties
     NO_WINDOWS_PENALTY: 3,
-    TOO_SMALL_PENALTY: 4,
+    TOO_SMALL_PENALTY: 20,
 }
 
 export const PERFECT_ROOMS = [
@@ -53,6 +53,7 @@ export const PERFECT_ROOMS = [
     },
     {
         name: "hall",
+        mustBe: false,
         mustHaveWindows: false,
         minimumArea: 4,
         optimalArea: 6,

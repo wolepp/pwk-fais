@@ -2,8 +2,6 @@ import { SCALE, PERFECT_ROOMS, POINTS, wallConnections, wallConnectionsNums } fr
 
 export function fit(apartment) {
     let rooms = getRooms(apartment);
-    if (rooms.length > 10) return 0;    // dwie ściany zaraz przy sobie - mnóstwo pokoi
-
 
     evaluateFunctions(rooms);
     assignFunction(rooms);
@@ -11,7 +9,6 @@ export function fit(apartment) {
     let sum = 0;
     rooms.forEach((room) => {
         sum += room.fitness;
-        // console.log(`Funkcja: ${room.function}, punkty: ${room.fitness}`);
     })
     return sum;
 }
@@ -106,33 +103,63 @@ function _isWall(wallPiece) {
 function evaluateFunctions(rooms) {
     rooms.forEach(room => {
         room.functions = _assignFunctionsSorted(room);
-        // room.function = room.functions[bestFunctionIdx].func;
-        // room.fitness = room.functions[bestFunctionIdx].points;
     });
 }
 
 function assignFunction(rooms) {
     const mustBeRooms = PERFECT_ROOMS.filter(attributes => attributes.mustBe === true)
-    const optionalRooms = PERFECT_ROOMS.filter(attributes => attributes.mustBe === false)
+    const optionalRooms = PERFECT_ROOMS.filter(attributes => attributes.mustBe == false)
 
-    let chosenRooms = [];
+    // znalezienie najlepszych pokojów must-be
     mustBeRooms.forEach(mustBeRoom => {
-        let maxPoints = 0;
         let chosenRoom;
+        let maxPoints = 0;
         rooms.forEach(room => {
-            console.log(room)
             room.functions.forEach(({func, points}) => {
                 if (func === mustBeRoom.name
-                     && points > maxPoints
-                     && ! chosenRooms.includes(room)) {
-                    console.log(`func: ${func}, points: ${points}`)
+                        && points > maxPoints
+                        && room.function === undefined) {
                     chosenRoom = room;
                     maxPoints = points;
                 }
             })
         });
-        chosenRooms.push(chosenRoom)
-    });
+        if (chosenRoom) {
+            chosenRoom.function = mustBeRoom.name;
+            chosenRoom.fitness = maxPoints;
+        }
+    })
+
+
+    // znalezienie po jednym pokoju z nie niezbędnych typów
+    optionalRooms.forEach(optRoom => {
+        let chosenRoom;
+        let maxPoints = -100;
+        rooms
+        .filter(room => room.function === undefined)
+        .forEach(room => {
+            room.functions.forEach(({func, points}) => {
+                if (func === optRoom.name
+                    && points > maxPoints) {
+                        chosenRoom = room;
+                        maxPoints = points;
+                }
+            })
+        })
+        if (chosenRoom) {
+            chosenRoom.function = optRoom.name;
+            chosenRoom.fitness = maxPoints;
+        }
+    })
+
+    // jeśli jeszcze są pokoje - przypisz im najlepszą funkcję
+    // mogą się powtarzać
+    rooms
+        .filter(room => room.function === undefined)
+        .forEach(room => {
+            room.function = room.functions[0].func;
+            room.fitness = room.functions[0].points;
+        })
 }
 
 function _assignFunctionsSorted(room) {
