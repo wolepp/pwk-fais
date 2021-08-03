@@ -11,7 +11,7 @@ Do oceny osobników służy **funkcja dopasowania.**
 ## Uruchamianie
 
 W folderze głównym należy uruchomić dowolny serwer HTTP (powód - CORS), na przykład `python2 -m SimpleHTTPServer 8000` lub `python3 -m http.server 8000`.
-Po przejściu na stronę `http://localhost:8000/main.html` aplikacja uruchomi się.
+Po przejściu na stronę [`http://localhost:8000/main.html`](http://localhost:8000/main.html) aplikacja uruchomi się.
 
 ## Korzystanie
 
