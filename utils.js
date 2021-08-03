@@ -44,10 +44,10 @@ export function dec(hex) {
 
 export function printArray(arr) {
     let str = "";
-    for (let y = 0; y < arr[0].length; y++) {
+    for (let y = 0; y < arr.length; y++) {
         let row = "";
-        for (let x = 0; x < arr.length; x++) {
-            row += arr[x][y];
+        for (let x = 0; x < arr[0].length; x++) {
+            row += arr[y][x];
         }
         str += row + "\n";
     }

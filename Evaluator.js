@@ -7,9 +7,12 @@ export function fit(apartment) {
     assignFunction(rooms);
 
     let sum = 0;
+    if (rooms.length < 1) return 0;
     rooms.forEach((room) => {
-        sum += room.fitness;
+        let room_fitness = room.fitness || 0;
+        sum += room_fitness;
     })
+    apartment.fitness = sum;
     return sum;
 }
 
@@ -83,8 +86,11 @@ function _findOppositePoint(upperLeftPoint, apartment) {
     while (! _isWall(walls[oppositePoint.x][oppositePoint.y])) {
         oppositePoint.x++;
     }
-    while (! _isBottomRightCorner(walls[oppositePoint.x][oppositePoint.y])) {
+    let LIMIT = 20;
+    let counter = 0;
+    while (! _isBottomRightCorner(walls[oppositePoint.x][oppositePoint.y]) && counter < LIMIT) {
         oppositePoint.y++;
+        counter++;
     }
     return oppositePoint;
 }

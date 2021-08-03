@@ -24,8 +24,8 @@ export default class Apartment {
         this.width = width;
         this.genotype = Utils.createArray(length, width);
         this.phenotype = Utils.createArray(length, width);
+        this.walls = [];
         this.putSurroundingWalls();
-
         //        LENGTH
         // W +---------------+  0
         // I |               |  1
@@ -36,6 +36,13 @@ export default class Apartment {
         //           x
 
         // genotype: [x][y]
+    }
+
+    copy() {
+        let copy = new Apartment(this.length, this.width);
+        copy.genotype = JSON.parse(JSON.stringify(this.genotype));
+        copy.phenotype = JSON.parse(JSON.stringify(this.phenotype));
+        return copy;
     }
     
     putWall(a, b) {
@@ -57,48 +64,77 @@ export default class Apartment {
 
     putRandomWall(p=0.3) {
         let wall = Utils.rand(1, 5);
+        let coordinates = {
+            a: {
+                x: 0, y: 0,
+            },
+            b: {
+                x: 0, y:0,
+            },
+        };
         switch(wall) {
             case 1: // od górnej ściany w dół
                 var x = Utils.rand(2, this.length-2);
                 var y_start = 1;
                 var y_end = y_start + 1;
+                if (this.isWall(x, y_end)) return;
                 while (y_end < this.width - 1 && 
                        (Math.random() < p || !this.isWall(x, y_end))) {
                            y_end++;
                        }
+                coordinates.a.x = x;
+                coordinates.b.x = x;
+                coordinates.a.y = y_start;
+                coordinates.b.y = y_end;
                 this.putWall([x, y_start], [x, y_end]);
                 break;
             case 2: // od prawej ściany w lewo
                 var y = Utils.rand(2, this.width-2);
-                var x_start = this.length - 1;
+                var x_start = this.length - 2;
                 var x_end = x_start - 1;
+                if (this.isWall(x_end, y)) return;
                 while (x_end > 0 && 
                        (Math.random() < p || !this.isWall(x_end, y))) {
                            x_end--;
                        }
+                coordinates.a.y = y;
+                coordinates.b.y = y;
+                coordinates.a.x = x_start;
+                coordinates.b.x = x_end;
                 this.putWall([x_start, y], [x_end, y]);
                 break;
             case 3: // od dolnej ściany w górę
                 var x = Utils.rand(2, this.length-2);
-                var y_start = this.width;
+                var y_start = this.width - 1;
                 var y_end = y_start - 1;
+                if (this.isWall(x, y_end)) return;
                 while (y_end > 0 && 
                        (Math.random() < p || !this.isWall(x, y_end))) {
                            y_end--;
                        }
+                coordinates.a.x = x;
+                coordinates.b.x = x;
+                coordinates.a.y = y_start;
+                coordinates.b.y = y_end;
                 this.putWall([x, y_start], [x, y_end]);
                 break;
             case 4: // od lewej ściany w prawo
                 var y = Utils.rand(2, this.width-2);
                 var x_start = 0;
                 var x_end = x_start + 1;
+                if (this.isWall(x_end, y)) return;
                 while (x_end < this.length - 1 && 
                        (Math.random() < p || !this.isWall(x_end, y))) {
                            x_end++;
                        }
+                coordinates.a.y = y;
+                coordinates.b.y = y;
+                coordinates.a.x = x_start;
+                coordinates.b.x = x_end;
                 this.putWall([x_start, y], [x_end, y]);
                 break;
         }
+        this.walls.push(coordinates);
     }
 
     finish() {

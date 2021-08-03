@@ -1,6 +1,9 @@
 export const wallConnections = Object.freeze({"UP": 1, "RIGHT": 2, "DOWN": 4, "LEFT": 8});
 export const wallConnectionsNums = [8, 4, 2, 1]
 
+export const ADD_WALL_PROB = 0.5;
+// REMOVE_WALL_PROB = 1 - ADD_WALL_PROB
+
 const LENGTH_METERS = 8;
 const WIDTH_METERS  = 5;
 
