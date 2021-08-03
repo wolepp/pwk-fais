@@ -1,6 +1,7 @@
 # Generowanie bloków
 
 ## Wprowadzenie teoretyczne
+
 **Osobnik: genotyp + fenotyp**
 Rozpoczyna się od **populacji początkowej**, czyli losowo wygenerowanych osobników.
 Do oceny osobników służy **funkcja dopasowania.**
@@ -24,3 +25,13 @@ Do działania aplikacji polecana jest przeglądarka Chrome.
 ## Technologie
 
 Aplikacja do wyświetlania grafiki korzysta z biblioteki [Three.js](https://threejs.org/)
+
+## Zrzuty ekranu
+
+Pierwsze pokolenie
+
+![Pierwsze pokolenie](screenshots/first-population.png)
+
+Drugie pokolenie
+
+![Drugie pokolenie](screenshots/second-population.png)
